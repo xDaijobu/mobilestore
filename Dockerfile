@@ -20,16 +20,16 @@ EXPOSE $PORT/tcp
 RUN echo "ASPNETCORE_URLS: [$ASPNETCORE_URLS]"
 RUN echo "PORT: [$PORT]"
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ["PlaystoreAPI.csproj", "."]
-RUN dotnet restore "./PlaystoreAPI.csproj"
-COPY . .
-WORKDIR "/src/."
-RUN dotnet build "PlaystoreAPI.csproj" -c Release -o /app/build
+# FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+# WORKDIR /src
+# COPY ["PlaystoreAPI.csproj", "."]
+# RUN dotnet restore "./PlaystoreAPI.csproj"
+# COPY . .
+# WORKDIR "/src/."
+# RUN dotnet build "PlaystoreAPI.csproj" -c Release -o /app/build
 
-FROM build AS publish
-RUN dotnet publish "PlaystoreAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+# FROM build AS publish
+# RUN dotnet publish "PlaystoreAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
