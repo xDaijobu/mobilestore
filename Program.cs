@@ -30,10 +30,10 @@ app.UseHttpsRedirection();
 app.Run();
 
 #region 
-async Task<Response> GetPlaystoreNumber(string packageName, string logoColor = "0E8A16")
+async Task<Response> GetPlaystoreNumber(string packageName)
 {
     var version = await GetStoreVersion("[1][2][140][0][0][0]", packageName);
-    return new Response(1, "Playstore", version, "white", logoColor);
+    return new Response(1, "Playstore", version, "white");
 }
 
 Task<string> GetLatestReleaseNotes(string packageName)
@@ -67,4 +67,4 @@ async Task<string> GetStoreVersion(string magicNumber, string packageName = "")
 
 
 
-record Response(int SchemaVersion, string Label, string Message, string Color, string LogoColor);
+record Response(int SchemaVersion, string Label, string Message, string Color);
