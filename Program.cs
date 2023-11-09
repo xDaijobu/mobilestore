@@ -4,13 +4,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+	options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+{
+	options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 
 app.MapGet("/getLatestVersion", async (string packageName) => await GetPlaystoreNumber(packageName));
 
 app.MapGet("/getLatestReleaseNotes", async (string packageName) => await GetLatestReleaseNotes(packageName));
-
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
@@ -23,8 +30,11 @@ app.UseHttpsRedirection();
 app.Run();
 
 #region 
-Task<string> GetPlaystoreNumber(string packageName)
-=> GetStoreVersion("[1][2][140][0][0][0]", packageName);
+async Task<Response> GetPlaystoreNumber(string packageName)
+{
+    var version = await GetStoreVersion("[1][2][140][0][0][0]", packageName);
+    return new Response(1, "Playstore", version, "orange");
+}
 
 Task<string> GetLatestReleaseNotes(string packageName)
     => GetStoreVersion("[1][2][144][1][1]", packageName);
@@ -54,3 +64,7 @@ async Task<string> GetStoreVersion(string magicNumber, string packageName = "")
     }
 }
 #endregion
+
+
+
+record Response(int SchemaVersion, string Label, string Message, string Color);
