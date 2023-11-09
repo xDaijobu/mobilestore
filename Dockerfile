@@ -50,7 +50,7 @@ EXPOSE $PORT/tcp
 RUN echo "ASPNETCORE_URLS: [$ASPNETCORE_URLS]"
 RUN echo "PORT: [$PORT]"
 
-FROM base AS final
+FROM build-env AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "PlaystoreAPI.dll"]
