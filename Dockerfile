@@ -21,6 +21,6 @@ RUN dotnet publish "PlaystoreAPI.csproj" -c Release -o /app/publish /p:UseAppHos
 
 FROM base AS final
 WORKDIR /app
-ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "PlaystoreAPI.dll"]
