@@ -12,11 +12,11 @@ app.MapGet("/getLatestVersion", async (string packageName) => await GetPlaystore
 app.MapGet("/getLatestReleaseNotes", async (string packageName) => await GetLatestReleaseNotes(packageName));
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 
