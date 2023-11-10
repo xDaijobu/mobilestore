@@ -1,10 +1,18 @@
 ## MobileStore API
+API for Google Play Store / AppStore Scrapper. Extract app version, details and etc.
+
 [Endpoint Badge](https://shields.io/badges/endpoint-badge)
 <br/><br/>
 ![Release](https://img.shields.io/endpoint?url=https%3A%2F%2Fmobilestore.up.railway.app%2FgetLatestVersion%2Fios%2F6448910354%2Fandroid&color=blue)
 ![Release](https://img.shields.io/endpoint?url=https%3A%2F%2Fmobilestore.up.railway.app%2FgetLatestVersion%2Fios%2F6448910354%2FiOS&color=blue)
 
+### For a badge on particular attribute, you can use
+```
+Android: https://img.shields.io/endpoint?url=https%3A%2F%2Fmobilestore.up.railway.app%2FgetLatestVersion%2Fios%2F6448910354%2Fandroid&color=blue
+iOS: https://img.shields.io/endpoint?url=https%3A%2F%2Fmobilestore.up.railway.app%2FgetLatestVersion%2Fios%2F6448910354%2FiOS&color=blue
+```
 
+### getLatestVersion
 ```
 HTTP: GET https://mobilestore.up.railway.app/getLatestVersion/{platform}/{packageName}/{label}
 Android: https://mobilestore.up.railway.app/getLatestVersion/android/com.e_intidata.MSTR_To/release 
@@ -14,6 +22,7 @@ iOS: https://mobilestore.up.railway.app/getLatestVersion/ios/6448910354/release
 
 ------------------------------------------------------------------------------------------
 
+### getLatestReleaseNotes
 ```sh
 HTTP: GET https://mobilestore.up.railway.app/getLatestReleaseNotes/{platform}/{packageName}
 Android: https://mobilestore.up.railway.app/getLatestReleaseNotes/android/com.e_intidata.MSTR_To
