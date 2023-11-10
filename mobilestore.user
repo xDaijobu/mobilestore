@@ -2,6 +2,6 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ActiveDebugProfile>Docker</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>D:\Cris MSN\Github\PlaystoreAPI\Properties\PublishProfiles\docker login registry.digitalocean.com.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>D:\Cris MSN\Github\mobilestore\Properties\PublishProfiles\docker login registry.digitalocean.com.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

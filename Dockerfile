@@ -16,16 +16,16 @@ EXPOSE $PORT/tcp
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["PlaystoreAPI.csproj", "."]
-RUN dotnet restore "./PlaystoreAPI.csproj"
+COPY ["mobilestore.csproj", "."]
+RUN dotnet restore "./mobilestore.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "PlaystoreAPI.csproj" -c Release -o /app/build
+RUN dotnet build "mobilestore.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "PlaystoreAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "mobilestore.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PlaystoreAPI.dll"]
+ENTRYPOINT ["dotnet", "mobilestore.dll"]
