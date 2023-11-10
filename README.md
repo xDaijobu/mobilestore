@@ -1,30 +1,12 @@
-# Project Name
+## MobileStore API
+```sh
+HTTP: GET https://mobilestore.up.railway.app/getLatestVersion/{platform}/{packageName}/{label}
+```
+![image](https://github.com/xDaijobu/mobilestore/assets/22674537/5949627b-03a0-46ec-b5f8-860fe261a013)
 
-Short description of the project.
+------------------------------------------------------------------------------------------
 
-## Table of Contents
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Installation
-
-Instructions on how to install and set up the project.
-
-## Usage
-
-Instructions on how to use the project, including any configuration or setup required.
-
-## Features
-
-Highlight the main features or functionality of the project.
-
-## Contributing
-
-Guidelines on how users can contribute to the project, including any specific instructions or requirements.
-
-## License
-
-Information about the project's license and any additional terms or conditions.
+```sh
+HTTP: GET https://mobilestore.up.railway.app/getLatestReleaseNotes/{platform}/{packageName}
+```
+![image](https://github.com/xDaijobu/mobilestore/assets/22674537/d7c7b097-da45-4375-9457-b7ad03d4a0aa)
