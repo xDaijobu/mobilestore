@@ -2,6 +2,7 @@ using System.Text;
 using HtmlAgilityPack;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddJsonConsole();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -15,37 +16,13 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 });
 
 var app = builder.Build();
-
+app.MapGet("/", () => "Hello World!");
 app.MapGet("/getLatestVersion", async (string label, string packageName) => await GetPlaystoreNumber(label, packageName));
 
 app.MapGet("/getLatestReleaseNotes", async (string packageName) => await GetLatestReleaseNotes(packageName));
 
 app.MapGet("/debug/routes", (IEnumerable<EndpointDataSource> endpointSources) =>
         string.Join("\n", endpointSources.SelectMany(source => source.Endpoints)));
-
-// app.MapGet("/debug/routes", (IEnumerable<EndpointDataSource> endpointSources) =>
-// {
-//     var sb = new StringBuilder();
-//     var endpoints = endpointSources.SelectMany(es => es.Endpoints);
-//     foreach (var endpoint in endpoints)
-//     {
-//         if (endpoint is RouteEndpoint routeEndpoint)
-//         {
-//             _ = routeEndpoint.RoutePattern.RawText;
-//             _ = routeEndpoint.RoutePattern.PathSegments;
-//             _ = routeEndpoint.RoutePattern.Parameters;
-//             _ = routeEndpoint.RoutePattern.InboundPrecedence;
-//             _ = routeEndpoint.RoutePattern.OutboundPrecedence;
-//         }
-
-//         var routeNameMetadata = endpoint.Metadata.OfType<Microsoft.AspNetCore.Routing.RouteNameMetadata>().FirstOrDefault();
-//         _ = routeNameMetadata?.RouteName;
-
-//         var httpMethodsMetadata = endpoint.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault();
-//         _ = httpMethodsMetadata?.HttpMethods; // [GET, POST, ...]
-
-//     }
-// });
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -97,3 +74,4 @@ async Task<string> GetStoreVersion(string magicNumber, string packageName = "")
 
 
 record Response(int SchemaVersion, string Label, string Message, string Color);
+record Route(string Name, string HttpMetods, string RawText, string PathSegments, string Parameters, string InboundPrecedence, string OutboundPrecedence);
