@@ -15,7 +15,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 
 var app = builder.Build();
 
-app.MapGet("/getLatestVersion", async (string packageName) => await GetPlaystoreNumber(packageName));
+app.MapGet("/getLatestVersion", async (string label, string packageName) => await GetPlaystoreNumber(label, packageName));
 
 app.MapGet("/getLatestReleaseNotes", async (string packageName) => await GetLatestReleaseNotes(packageName));
 
