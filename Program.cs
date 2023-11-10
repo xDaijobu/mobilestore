@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Nodes;
 using HtmlAgilityPack;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,9 +18,18 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 
 var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
-app.MapGet("/getLatestVersion", async (string label, string packageName) => await GetPlaystoreNumber(label, packageName));
+app.MapGet("/getLatestVersion/{platform}/{packageName}/{label}", async Task<Response> (string platform, string packageName, string label) =>
+{
+    var versionNumber = "";
+    if (platform.ToLower() == "ios")
+        versionNumber = await GetiOSLatestVersionNumber(packageName);
+    else
+        versionNumber = await GetPlaystoreNumber(packageName);
 
-app.MapGet("/getLatestReleaseNotes", async (string packageName) => await GetLatestReleaseNotes(packageName));
+    return new Response(1, label, versionNumber, "white");
+});
+
+app.MapGet("/getLatestReleaseNotes/{platform}/{packageName}", async (string platform, string packageName) => await GetLatestReleaseNotes(packageName));
 
 app.MapGet("/debug/routes", (IEnumerable<EndpointDataSource> endpointSources) =>
         string.Join("\n", endpointSources.SelectMany(source => source.Endpoints)));
@@ -35,17 +45,14 @@ app.UseHttpsRedirection();
 
 app.Run();
 
-#region 
-async Task<Response> GetPlaystoreNumber(string label, string packageName)
-{
-    var version = await GetStoreVersion("[1][2][140][0][0][0]", packageName);
-    return new Response(1, label, version, "white");
-}
+#region Android
+Task<string> GetPlaystoreNumber(string packageName)
+   => GetStoreVersion("[1][2][140][0][0][0]", packageName);
 
 Task<string> GetLatestReleaseNotes(string packageName)
     => GetStoreVersion("[1][2][144][1][1]", packageName);
 
-async Task<string> GetStoreVersion(string magicNumber, string packageName = "")
+async Task<string> GetStoreVersion(string magicNumber, string packageName)
 {
     var version = string.Empty;
     var url = $"https://play.google.com/store/apps/details?id={packageName}&hl=en";
@@ -71,7 +78,46 @@ async Task<string> GetStoreVersion(string magicNumber, string packageName = "")
 }
 #endregion
 
+#region iOS
+async Task<string> GetiOSLatestVersionNumber(string bundleId)
+{
+    var app = await LookupApp(bundleId);
+    return app?.Version ?? "";
+}
+
+async Task<string> GetiOSLatestReleaseNotes(string bundleId)
+{
+    var app = await LookupApp(bundleId);
+    return app?.ReleaseNotes ?? "";
+}
+
+async Task<AppiOS?> LookupApp(string bundleId)
+{
+    try
+    {
+        string platformCountryCode = "us";
+        using var http = new HttpClient();
+        string url = $"http://itunes.apple.com/lookup?id={bundleId}&country={platformCountryCode}";
+        var response = await http.GetAsync(url);
+        var content = response.Content == null ? null : await response.Content.ReadAsStringAsync();
+
+        if (string.IsNullOrEmpty(content))
+            return null;
+
+        var appLookup = JsonValue.Parse(content);
+
+        return new AppiOS(appLookup["results"][0]["version"].ToString(),
+                          appLookup["results"][0]["trackViewUrl"].ToString(),
+                          appLookup["results"][0]["releaseNotes"].ToString());
+    }
+    catch (Exception e)
+    {
+        throw new Exception($"Error looking up app details in App Store. BundleIdentifier={bundleId}.", e);
+    }
+}
+#endregion
 
 
 record Response(int SchemaVersion, string Label, string Message, string Color);
 record Route(string Name, string HttpMetods, string RawText, string PathSegments, string Parameters, string InboundPrecedence, string OutboundPrecedence);
+record AppiOS(string Version, string Url, string ReleaseNotes);
