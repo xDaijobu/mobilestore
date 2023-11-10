@@ -6,11 +6,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
 {
-	options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 {
-	options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 
 var app = builder.Build();
@@ -18,6 +18,7 @@ var app = builder.Build();
 app.MapGet("/getLatestVersion", async (string packageName) => await GetPlaystoreNumber(packageName));
 
 app.MapGet("/getLatestReleaseNotes", async (string packageName) => await GetLatestReleaseNotes(packageName));
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
@@ -30,10 +31,10 @@ app.UseHttpsRedirection();
 app.Run();
 
 #region 
-async Task<Response> GetPlaystoreNumber(string packageName)
+async Task<Response> GetPlaystoreNumber(string label, string packageName)
 {
     var version = await GetStoreVersion("[1][2][140][0][0][0]", packageName);
-    return new Response(1, "Playstore", version, "white");
+    return new Response(1, label, version, "white");
 }
 
 Task<string> GetLatestReleaseNotes(string packageName)
