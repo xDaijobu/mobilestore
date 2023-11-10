@@ -23,32 +23,41 @@ app.MapGet("/getLatestVersion/{platform}/{packageName}/{label}", async Task<Resp
     if (platform.ToLower() == "ios")
         versionNumber = await GetiOSLatestVersionNumber(packageName);
     else
-        versionNumber = await GetPlaystoreNumber(packageName);
+        versionNumber = await GetAndroidLatestVersionNumber(packageName);
 
     return new Response(1, label, versionNumber, "white");
 });
 
-app.MapGet("/getLatestReleaseNotes/{platform}/{packageName}", async (string platform, string packageName) => await GetLatestReleaseNotes(packageName));
+app.MapGet("/getLatestReleaseNotes/{platform}/{packageName}", async Task<string> (string platform, string packageName) =>
+{
+    string result = "";
+    if (platform.ToLower() == "ios")
+        result = await GetiOSLatestReleaseNotes(packageName);
+    else
+        result = await GetAndroidLatestReleaseNotes(packageName);
+
+    return result;
+});
 
 app.MapGet("/debug/routes", (IEnumerable<EndpointDataSource> endpointSources) =>
         string.Join("\n", endpointSources.SelectMany(source => source.Endpoints)));
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
 app.Run();
 
 #region Android
-Task<string> GetPlaystoreNumber(string packageName)
+Task<string> GetAndroidLatestVersionNumber(string packageName)
    => GetStoreVersion("[1][2][140][0][0][0]", packageName);
 
-Task<string> GetLatestReleaseNotes(string packageName)
+Task<string> GetAndroidLatestReleaseNotes(string packageName)
     => GetStoreVersion("[1][2][144][1][1]", packageName);
 
 async Task<string> GetStoreVersion(string magicNumber, string packageName)
@@ -71,7 +80,6 @@ async Task<string> GetStoreVersion(string magicNumber, string packageName)
     }
     catch (Exception ex)
     {
-        return "salah";
         throw new Exception($"Error parsing content from the Play Store. Url={url}.", ex);
     }
 }
@@ -94,7 +102,7 @@ async Task<AppiOS?> LookupApp(string bundleId)
 {
     try
     {
-        string platformCountryCode = "us";
+        string platformCountryCode = "id";
         using var http = new HttpClient();
         string url = $"http://itunes.apple.com/lookup?id={bundleId}&country={platformCountryCode}";
         var response = await http.GetAsync(url);
