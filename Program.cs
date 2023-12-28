@@ -4,8 +4,10 @@ using HtmlAgilityPack;
 
 var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Logging.AddConsole();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
 {
     options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
@@ -126,5 +128,4 @@ async Task<AppiOS?> LookupApp(string bundleId)
 
 
 record Response(int SchemaVersion, string Label, string Message, string Color);
-record Route(string Name, string HttpMetods, string RawText, string PathSegments, string Parameters, string InboundPrecedence, string OutboundPrecedence);
 record AppiOS(string Version, string Url, string ReleaseNotes);
